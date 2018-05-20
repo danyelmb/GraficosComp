@@ -36,7 +36,7 @@ typedef struct {
 Tmesh createMesh(GLfloat r, GLint Ni, GLint Nj);
 GLsizei meshSize;
         
-GLfloat M_PI=3.14;
+//GLfloat M_PI=3.14;
 // Variables globales
 int w = 600;
 int h = 600;
@@ -62,10 +62,13 @@ float deltaAngle = 0.0f;
 int xOrigin = -1;
 float angle = 60.0f;
 int soul=0;
+
+
 GLfloat scale =  1.0f;
+GLfloat tele1 = 0.0f;
+GLfloat tele2 = 0.0f;
+GLfloat tele3 = 0.0f;
 GLfloat translateX =  0.0f;
-
-
 GLfloat translateY =  0.0f;
 GLfloat translateZ =  0.0f;
 GLfloat DL0[] = { 1.0f, 0.0f, -1.0f, 0.0f };
@@ -331,9 +334,11 @@ void funDisplay() {
      
         light='1';
       // Matriz de Vista V (CÃ¡mara)
-    GLfloat eye[3]    = {3.0*cos(X_camera*M_PI/180.0)*sin(Y_camera*M_PI/180.0),  3.0*sin(Y_camera*M_PI/180.0),  3.0*cos(Y_camera*M_PI/180.0)*cos(X_camera*M_PI/180.0)};
-    GLfloat center[3] = {0.0,  0.0, 0.0};
-    GLfloat up[3]     = {0.0,  1.0,  0.0};
+    GLfloat eye[3]    = {   3.0f*cos(X_camera*M_PI/180.0f)*sin(Y_camera*M_PI/180.0f),
+                            3.0f*sin(Y_camera*M_PI/180.0f),
+                            3.0f*cos(Y_camera*M_PI/180.0f)*cos(X_camera*M_PI/180.0f)};
+    GLfloat center[3] = {0.0f,  0.0f, 0.0f};
+    GLfloat up[3]     = {0.0f,  1.0f,  0.0f};
     gluLookAt(    eye[0],    eye[1],    eye[2],
                center[0], center[1], center[2],
                    up[0],     up[1],     up[2]);
@@ -348,9 +353,9 @@ void funDisplay() {
     gaunlet();
     glPopMatrix();
             //glutSolidSphere(0.05,50,50);
-            glPopMatrix();
+    glPopMatrix();
     drawLights();
-     GLfloat Ka[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+    GLfloat Ka[] = { 0.2f, 0.2f, 0.2f, 1.0f };
     GLfloat Kd[] = { 0.9f, 0.9f, 0.9f, 1.0f };
     GLfloat Ks[] = { 0.9f, 0.9f, 0.9f, 1.0f };
     glMaterialfv(GL_FRONT, GL_AMBIENT  , Ka);
@@ -377,8 +382,7 @@ void funDisplay() {
     glTranslatef(1,0,0);
     
     glScalef(0.25,0.25,0.25);
-     glTranslatef(
-translateX,translateY,translateZ);
+    glTranslatef(translateX,translateY,translateZ);
     glScalef(scale,scale,scale);
     drawObject(1,1);
     glPopMatrix();
@@ -400,14 +404,14 @@ void drawCube() {
         glVertex3f( 1.0f, -1.0f,  1.0f); 
         glTexCoord2f(1.0f, 0.0f);
         glVertex3f( 1.0f, -1.0f, -1.0f); 
-        
         glTexCoord2f(1.0f, 1.0f);
         glVertex3f( 1.0f,  1.0f, -1.0f); 
         glTexCoord2f(0.0f, 1.0f);
         glVertex3f( 1.0f,  1.0f,  1.0f);   
-        glEnd();
+            glEnd();
+            
         glDisable(GL_TEXTURE_2D);
-         glEnable(GL_TEXTURE_2D);
+        glEnable(GL_TEXTURE_2D);
      glBindTexture(GL_TEXTURE_2D, objTexture[4]);
     
         glBegin(GL_QUADS);
@@ -417,10 +421,10 @@ void drawCube() {
         glVertex3f(-1.0f,  1.0f,  1.0f);
         glVertex3f(-1.0f,  1.0f, -1.0f);
         glVertex3f(-1.0f, -1.0f, -1.0f);
-         glEnd();
+            glEnd();
     
-         glDisable(GL_TEXTURE_2D);
-              glEnable(GL_TEXTURE_2D);
+        glDisable(GL_TEXTURE_2D);
+        glEnable(GL_TEXTURE_2D);
      glBindTexture(GL_TEXTURE_2D, objTexture[4]);
     
         glBegin(GL_QUADS);
@@ -430,10 +434,10 @@ void drawCube() {
         glVertex3f( 1.0f,  1.0f, -1.0f);
         glVertex3f(-1.0f,  1.0f, -1.0f); 
         glVertex3f(-1.0f,  1.0f,  1.0f);
-          glEnd();
+            glEnd();
     
-         glDisable(GL_TEXTURE_2D);
-              glEnable(GL_TEXTURE_2D);
+        glDisable(GL_TEXTURE_2D);
+        glEnable(GL_TEXTURE_2D);
      glBindTexture(GL_TEXTURE_2D, objTexture[4]);
     
         glBegin(GL_QUADS);
@@ -443,10 +447,10 @@ void drawCube() {
         glVertex3f(-1.0f, -1.0f,  1.0f);
         glVertex3f(-1.0f, -1.0f, -1.0f);    
         glVertex3f( 1.0f, -1.0f, -1.0f);
-          glEnd();
+            glEnd();
     
-         glDisable(GL_TEXTURE_2D);
-              glEnable(GL_TEXTURE_2D);
+        glDisable(GL_TEXTURE_2D);
+        glEnable(GL_TEXTURE_2D);
      glBindTexture(GL_TEXTURE_2D, objTexture[2]);
     
         glBegin(GL_QUADS);
@@ -456,10 +460,10 @@ void drawCube() {
         glVertex3f( 1.0f, -1.0f,  1.0f);
         glVertex3f( 1.0f,  1.0f,  1.0f);
         glVertex3f(-1.0f,  1.0f,  1.0f);
-          glEnd();
+            glEnd();
     
-         glDisable(GL_TEXTURE_2D);
-              glEnable(GL_TEXTURE_2D);
+        glDisable(GL_TEXTURE_2D);
+        glEnable(GL_TEXTURE_2D);
      glBindTexture(GL_TEXTURE_2D, objTexture[4]);
     
         glBegin(GL_QUADS);
@@ -469,36 +473,32 @@ void drawCube() {
         glVertex3f(-1.0f,  1.0f, -1.0f);
         glVertex3f( 1.0f,  1.0f, -1.0f);  
         glVertex3f( 1.0f, -1.0f, -1.0f);
-    glEnd();
+            glEnd();
     
-         glDisable(GL_TEXTURE_2D);
+        glDisable(GL_TEXTURE_2D);
 }
 void funKeyboard(int key, int x, int y) {
     
     switch(key) {
         case GLUT_KEY_UP:
-           
-             luz_r+= 0.1;
-             glDisable(GL_LIGHT1);
-              glEnable(GL_LIGHT2);
-             if(luz_r<=+1){
-                luz_r=+1;
+            luz_r+= 0.1;
+            glDisable(GL_LIGHT1);
+            glEnable(GL_LIGHT2);
+            if(luz_r<=+1){
+               luz_r=+1;
             }
-              translateY+=1.0f;
+            translateY+=1.0f;
             break;
         case GLUT_KEY_DOWN:
-            
-           
-             glDisable(GL_LIGHT2);
-              glEnable(GL_LIGHT3);
-               luz_r -= 5.0f;
-             if(luz_r>=0){
-                luz_r=0;
+            glDisable(GL_LIGHT2);
+            glEnable(GL_LIGHT3);
+            luz_r -= 5.0f;
+            if(luz_r>=0){
+               luz_r=0;
             }
-               translateY-=1.0f;
+            translateY-=1.0f;
             break;
         case GLUT_KEY_RIGHT:
-            
              glDisable(GL_LIGHT3);
               glEnable(GL_LIGHT4);
             rotY_green += 5.0f;
@@ -507,13 +507,12 @@ void funKeyboard(int key, int x, int y) {
             }
             translateX+=5.0f;
             break;
-        case GLUT_KEY_LEFT:
-            
-             glDisable(GL_LIGHT4);
-              glEnable(GL_LIGHT5);
-             rotY_green -= 5.0f;
-             if(rotY_green<=-130){
-                rotY_green=-130;
+        case GLUT_KEY_LEFT: 
+            glDisable(GL_LIGHT4);
+             glEnable(GL_LIGHT5);
+            rotY_green -= 5.0f;
+            if(rotY_green<=-130){
+               rotY_green=-130;
             }translateX-=5.0f;
            
             break;
@@ -532,15 +531,11 @@ void mouseWheel(int button, int dir, int x, int y)
            if (zoom>-10.25f){
         zoom = 10.25f;
         }
-        
-    }
-    else
-    {
+    }else{
         // Zoom out
-       
         zoom+=1;
-         if ( zoom<10.25f   ){
-        zoom = 10.25f;
+        if (zoom<10.25f){
+            zoom = 10.25f;
         }
     }
 
@@ -562,13 +557,13 @@ void repeat(int t){
        if(Lp>=90){
            r=false;
            Lp=90;
-       }
+        }
     }else{
-         Lp-=1;
-       if(Lp<=-90){
-           r=true;
-           Lp=-90;
-       }
+        Lp-=1;
+        if(Lp<=-90){
+            r=true;
+            Lp=-90;
+        }
     }
     glutPostRedisplay();
     glutTimerFunc(30, repeat, 0);
@@ -579,9 +574,11 @@ void drawLights() {
     
  // Luz 0: Direccional
     glLightfv(GL_LIGHT0, GL_POSITION, DL0);
+    
     glPushMatrix();
  // Luz 1: Posicional
     glRotatef(Lp,0,1,0);
+    
     glLightfv(GL_LIGHT1, GL_POSITION, PL1);
     
     glLightfv(GL_LIGHT2, GL_POSITION, PL1);
@@ -593,6 +590,7 @@ void drawLights() {
     glLightfv(GL_LIGHT5, GL_POSITION, PL1);
     
     glLightfv(GL_LIGHT6, GL_POSITION, PL1);
+    
     glPopMatrix();
 
 }
@@ -602,13 +600,11 @@ void turnoff(unsigned char Key){
       switch(Key) {
         
         case '1':
-              glDisable(GL_LIGHT1);
-        break;
+              glDisable(GL_LIGHT1); break;
         case '2': 
-              glDisable(GL_LIGHT2);
-        break;
+              glDisable(GL_LIGHT2); break;
         case '3': 
-              glDisable(GL_LIGHT3);break;
+              glDisable(GL_LIGHT3); break;
         case '4': 
               glDisable(GL_LIGHT4); break; 
         case '5': 
@@ -623,91 +619,143 @@ void MyKeyboardFunc(unsigned char Key, int x, int y){
     switch(Key) {
         
         case 'a':
-               turnoff(light);
-        break;
-         case 'A':
-               turnoff(light);
-        break;
+            turnoff(light);
+            break;
+        
+        case 'A':
+            turnoff(light);
+            break;
+          
         case 'o':
-             turnoff(light);
-        light='3';
-        glEnable(GL_LIGHT3);
-          soul=1;
-        break;
+            turnoff(light);
+            light='3';
+            glEnable(GL_LIGHT3);
+            soul=1;
+            break;
         case 'O':
-             turnoff(light);
-          soul=0;
-        break;
+            turnoff(light);
+            soul=0;
+            break;
+            
         case 'P':
-             turnoff(light);
-        light='6';
-        glEnable(GL_LIGHT6);
-          desZ+=1;
-        if(desZ<=+50){
-            desZ=+50;
-        }
-        break;
+            turnoff(light);
+            light='6';
+            glEnable(GL_LIGHT6);
+            desZ+=1;
+            if(desZ<=+50){
+                desZ=+50;
+            }
+            break;
+            
         case 'p':
-             turnoff(light);
-        light='6';
-        glEnable(GL_LIGHT6);
-           desZ-=1;
-        if(desZ<=-50){
-            desZ=-50;
-        }
-        break;
-        case 'l': if(luz_a){
-            luz_a=0;
-              glDisable(GL_LIGHT0);
-        }else{ luz_a=1;
-          glEnable(GL_LIGHT0);}
-        break;
+            turnoff(light);
+            light='6';
+            glEnable(GL_LIGHT6);
+            desZ-=1;
+            if(desZ<=-50){
+                desZ=-50;
+            }
+            break;
+            
+        case 'l': 
+            if(luz_a){
+                luz_a=0;
+                glDisable(GL_LIGHT0);
+            }else{ 
+                luz_a=1;
+                glEnable(GL_LIGHT0);}
+            break;
+            
         case 'r': 
             mind=0;
-        turnoff(light);
-        light='4';
-        glEnable(GL_LIGHT4);
-        scale+=0.1;
-             break;
-        case 'R': mind=0;
-        turnoff(light);
-        light='4';
-        glEnable(GL_LIGHT4);
-             scale-=0.1; break;
-        case 'S':  mind=0;
-        turnoff(light);
-        light='5';
-        glEnable(GL_LIGHT5); break;
-        case 's':  mind=0;
-        turnoff(light);
-        light='5';
-        glEnable(GL_LIGHT5);break;
+            turnoff(light);
+            light='4';
+            glEnable(GL_LIGHT4);
+            if(scale<3.0f){
+                scale +=  0.1f;
+            }
+            if(scale<1.0f){
+                scale += 0.1f;
+            }
+            break;
+            
+        case 'R': 
+            mind=0;
+            turnoff(light);
+            light='4';
+            glEnable(GL_LIGHT4);
+            if(scale>0.1f){
+                scale -= 0.1f;
+            }
+            if(scale>1.0f){
+                scale -= 0.1f;
+            } 
+            break;
+            
+        case 's':  
+            mind=0;
+            turnoff(light);
+            light='5';
+            glEnable(GL_LIGHT5); 
+            tele1 += 11.25;
+            tele2 += 11.25;
+            tele3 += 11.25;
+            break;
+            
+        case 'S':  
+            mind=0;
+            turnoff(light);
+            light='5';
+            glEnable(GL_LIGHT5);
+            tele1 -= 11.25;
+            tele2 -= 11.25;
+            tele3 -= 11.25;
+            
+            break;
         
-         case 'm': mind=1;
-        turnoff(light);
-        light='1';
-        glEnable(GL_LIGHT1);
-        break;
-        case 'M': mind=1;
-        turnoff(light);
-        light='1';
-        glEnable(GL_LIGHT1);
-        break;
+        case 'm': 
+            mind=1;
+            turnoff(light);
+            light='1';
+            glEnable(GL_LIGHT1);
+            break;
+            
+        case 'M': 
+            mind=1;
+            turnoff(light);
+            light='1';
+            glEnable(GL_LIGHT1);
+            break;
        
-         case 't': desZ=0;
-         soul=0;
-         mind=0;
-          turnoff(light);
-        light='2';
-        glEnable(GL_LIGHT2);
-        scale=1;
-         break;
+        case 't': 
+            desZ=0;
+            soul=0;
+            mind=0;
+            turnoff(light);
+            light='2';
+            glEnable(GL_LIGHT2);
+            scale=1;
+            break;
+        
+        case 'z':
+            if(desZ>-50){
+                desZ=desZ-3;
+            }
+            break;
+            
+        case'Z':
+            if(desZ<50){
+                desZ=desZ+3;
+            }
+            break;
+            
     }
     glutPostRedisplay();
     
 }
+//Gemas
 void realityGem(){
-      glPushMatrix();
+     glPushMatrix();
      glTranslatef(-0.8,0,-0.5);
      glRotatef(30,0,1,0);
     GLUquadricObj *obj = gluNewQuadric();
@@ -843,9 +891,11 @@ void mindGem(){
      
  
 }
+
+//Guante
 void gaunlet(){
     
-               GLfloat Kc[] = {  0.24725f, 0.2245f, 0.0645f, 1.0f };
+    GLfloat Kc[] = {  0.24725f, 0.2245f, 0.0645f, 1.0f };
     GLfloat Kf[] = { 0.34615f, 0.3143f, 0.0903f, 1.0f };
     GLfloat Kv[] = {0.797357f, 0.723991f, 0.208006f, 1.0f};
     glMaterialfv(GL_FRONT, GL_AMBIENT  , Kc);
@@ -862,7 +912,7 @@ void gaunlet(){
 //    //gluCylinder(obj, 1.0, 1, 3, 30, 30);
 }
 
-
+//Esferas
 void iron(){
     // Definimos el material del objeto
     GLfloat Ka[] = { 0.2f, 0.2f, 0.2f, 1.0f };
@@ -873,15 +923,15 @@ void iron(){
     glMaterialfv(GL_FRONT, GL_SPECULAR , Ks);
     glMaterialf (GL_FRONT, GL_SHININESS, 50.0f);
      glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, objTexture[2]);
+        glBindTexture(GL_TEXTURE_2D, objTexture[2]);
    
     glPushMatrix();
-      glTranslatef(-4.0f, 0.0f, -5.0f);
+        glTranslatef(-4.0f, 0.0f, -5.0f);
    
-            glRotatef(90,0,1,0);
+        glRotatef(90,0,1,0);
 
       
-    myVbo();
+        myVbo();
     glPopMatrix();
 }
 void vision(){
@@ -900,7 +950,7 @@ void vision(){
         glTranslatef(2.0f, 0.0f, 0.0f);
         glRotatef(90,0,1,0);
       
-    myVbo();
+        myVbo();
     glPopMatrix();
     glDisable(GL_TEXTURE_2D);
 }
@@ -913,14 +963,14 @@ void spidy(){
     glMaterialfv(GL_FRONT, GL_DIFFUSE  , Kd);
     glMaterialfv(GL_FRONT, GL_SPECULAR , Ks);
     glMaterialf (GL_FRONT, GL_SHININESS, 50.0f);
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, objTexture[4]);
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, objTexture[4]);
     glPushMatrix();
-    glTranslatef(0,4,-2.5);
-    glRotatef(Lp,0,0,1);
-    glTranslatef(0,-4,0);
-    glScalef(0.25,0.25,0.25);
-    myVbo();
+        glTranslatef(0,4,-2.5);
+        glRotatef(Lp,0,0,1);
+        glTranslatef(0,-4,0);
+        glScalef(0.25,0.25,0.25);
+        myVbo();
     glPopMatrix();
     
     glDisable(GL_TEXTURE_2D);
@@ -934,8 +984,8 @@ void witch(){
     glMaterialfv(GL_FRONT, GL_DIFFUSE  , Kd);
     glMaterialfv(GL_FRONT, GL_SPECULAR , Ks);
     glMaterialf (GL_FRONT, GL_SHININESS, 50.0f);
-      glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, objTexture[5]);
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, objTexture[5]);
     glPushMatrix();
         glTranslatef(2.0f, 0.0f, -5.0f);
         glRotatef(90,0,1,0);
@@ -949,12 +999,35 @@ void drawObject(GLfloat s, GLint c) {
  
     
  // Definimos el objeto
-  
+    glPushMatrix();
+        glTranslatef(1.0f, 0.0f, 0.0f);
+        glRotatef(tele1,1,0,0);
+        glRotatef(tele2,0,1,0);
+        glRotatef(tele3,0,0,1);
+        glTranslatef(-1.0f, 0.0f, 0.0f);
+        iron();
+    glPopMatrix();
     
-   iron();
-    witch();
+    
+    glPushMatrix();
+        glTranslatef(0.0f, 1.0f, 0.0f);
+        glRotatef(tele1,1,1,0);
+        glRotatef(tele2,0,1,1);
+        glRotatef(tele3,0,1,0);
+        glTranslatef(0.0f, -1.0f, 0.0f);
+        witch();
+    glPopMatrix();
+    
     spidy();
-    vision();
+    
+    glPushMatrix();
+        glTranslatef(0.0f, 0.0f, 1.0f);
+        glRotatef(tele1,0,0,1);
+        glRotatef(tele2,1,1,1);
+        glRotatef(tele3,1,0,0);
+        glTranslatef(0.0f, 0.0f, -1.0f);
+        vision();
+    glPopMatrix();
 
 }
 
