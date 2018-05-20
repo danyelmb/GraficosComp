@@ -5,11 +5,11 @@
 #include <vector>
 #include <SOIL.h>
 
+//delcaracion de las funciones utilizadas
 void gaunlet();
 void ejes();
 void initFunc();
 void ironman();
-
 void drawObject(GLfloat s, GLint c);
 void myMesh(GLfloat r, GLint Ni, GLint Nj);
 void myVbo();
@@ -39,40 +39,43 @@ typedef struct {
 Tmesh createMesh(GLfloat r, GLint Ni, GLint Nj);
 GLsizei meshSize;
         
-GLfloat M_PI=3.14;
+//GLfloat M_PI = 3.14;
 // Variables globales
 int w = 600;
 int h = 600;
 unsigned char light='0';
 bool mind=0;
-GLfloat desZ = 0.0f;
-GLfloat rotacionGuante=0.0f;
+//variables para los movimientos y acciones del los objetos generales
+GLfloat fovy= 60.0f;
+float angle = 60.0f;
+float deltaAngle = 0.0f;
+int xOrigin = -1;
+GLfloat  zoom = 0;
+int xO,yO;
 GLfloat balanceo =  0.0f;
+GLfloat desZ = 0.0f;
+//variables guante
+GLfloat rotacionGuante=0.0f;
 GLfloat rotY_base =  0.0f;
 GLfloat rotX_base =  0.0f;
 GLfloat rotZ_base =  0.0f;
-GLfloat fovy= 60.0f;
-
-GLfloat tele1 = 0.0f;
-GLfloat tele2 = 0.0f;
-GLfloat tele3 = 0.0f;
 GLfloat Y_camera =  0.0f;
 GLfloat X_camera =  0.0f;
 GLfloat Z_camera =  0.0f;
-float deltaAngle = 0.0f;
-int xOrigin = -1;
-float angle = 60.0f;
+//movimientos gema
 int soul=0;
+GLfloat tele1 = 0.0f;
+GLfloat tele2 = 0.0f;
+GLfloat tele3 = 0.0f;
 GLfloat scale =  1.0f;
 GLfloat translateX =  0.0f;
-
-
 GLfloat translateY =  0.0f;
 GLfloat translateZ =  0.0f;
 GLfloat DL0[] = { 1.0f, 0.0f, -1.0f, 0.0f };
 GLfloat PL1[] = {0,0.2,2.3,1.0f};
-int xO,yO;
-GLfloat  zoom = 0;
+bool r=false;
+
+//Texturas
 #define NT 6
 GLuint  objTexture[NT];
 
@@ -81,11 +84,11 @@ GLuint  objTexture[NT];
 GLuint  myDisplayList;
 GLuint  VBO[NB];
 
-bool r=false;
+
 //Esfera Exterior con textura de la galaxia pudiendo ser sustituida por la del alma
 void universe(){
        
-     GLfloat Ka[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+    GLfloat Ka[] = { 0.2f, 0.2f, 0.2f, 1.0f };
     GLfloat Kd[] = { 0.9f, 0.9f, 0.9f, 1.0f };
     GLfloat Ks[] = { 0.9f, 0.9f, 0.9f, 1.0f };
     glMaterialfv(GL_FRONT, GL_AMBIENT  , Ka);
@@ -124,10 +127,10 @@ int main(int argc, char** argv) {
     const GLubyte *oglVersion = glGetString(GL_VERSION);
     printf("This system supports OpenGL Version: %s\n", oglVersion);
     
- // Inicializaciones especÃ­ficas
+ // Inicializaciones especificas
     initFunc();
     
- // ConfiguraciÃ³n CallBacks
+ // Configuracion CallBacks
     glutReshapeFunc(funReshape);
     glutDisplayFunc(funDisplay);
     glutSpecialFunc(funKeyboard);
@@ -135,9 +138,7 @@ int main(int argc, char** argv) {
     glutMouseFunc(mouseButton);
     glutMotionFunc (mouseMove);
     glutTimerFunc(10, repeat, 0);
-    
     glutKeyboardFunc(MyKeyboardFunc);
-  //  glutIdleFunc(funIdle);
  // Bucle principal
     glutMainLoop();
     
@@ -166,7 +167,7 @@ void initFunc() {
     glEnable(GL_LIGHT0);
 
  
-   // 1==> MIND
+   // 1==> Textura mente 
     GLfloat Ia11[] = { 0.1f, 0.1f, 0.1f, 1.0f };
     GLfloat Id1[] = { 1.0f, 1.0f, 0.0f, 1.0f };
     GLfloat Is1[] = { 0.9f, 0.9f, 0.0f, 1.0f };
@@ -174,7 +175,7 @@ void initFunc() {
     glLightfv(GL_LIGHT1, GL_DIFFUSE , Id1);
     glLightfv(GL_LIGHT1, GL_SPECULAR, Is1);
     glEnable(GL_LIGHT1);
-  // 2==> TIME
+  // 2==> Textura tiempo Agamoto
     GLfloat Ia2[] = { 0.1f, 0.1f, 0.1f, 1.0f };
     GLfloat Id2[] = { 0.0f, 1.0f, 0.0f, 1.0f };
     GLfloat Is2[] = { 0.9f, 0.9f, 0.9f, 1.0f };
@@ -182,7 +183,7 @@ void initFunc() {
     glLightfv(GL_LIGHT2, GL_DIFFUSE , Id2);
     glLightfv(GL_LIGHT2, GL_SPECULAR, Is2);
   
-      // Parámetros de la Luz 2 (Spotligth=foco)
+  // 3==> Textura mente
     GLfloat Ia3[] = { 0.1f, 0.1f, 0.1f, 1.0f };
     GLfloat Id3[] = { 1.0f, 0.5f, 0.0f, 1.0f };
     GLfloat Is3[] = { 0.9f, 0.9f, 0.9f, 1.0f };
@@ -190,21 +191,21 @@ void initFunc() {
     glLightfv(GL_LIGHT3, GL_DIFFUSE , Id3);
     glLightfv(GL_LIGHT3, GL_SPECULAR, Is3);
     
-      // Parámetros de la Luz 2 (Spotligth=foco)
+  // 4==> Textura mente
     GLfloat Ia4[] = { 0.1f, 0.1f, 0.1f, 1.0f };
     GLfloat Id4[] = { 1.0f, 0.0f, 0.0f, 1.0f };
     GLfloat Is4[] = { 0.9f, 0.9f, 0.9f, 1.0f };
     glLightfv(GL_LIGHT4, GL_AMBIENT , Ia4);
     glLightfv(GL_LIGHT4, GL_DIFFUSE , Id4);
     glLightfv(GL_LIGHT4, GL_SPECULAR, Is4);
-      // Parámetros de la Luz 2 (Spotligth=foco)
+  // 5==> Textura espacio Teseracto
     GLfloat Ia5[] = { 0.1f, 0.1f, 0.1f, 1.0f };
     GLfloat Id5[] = { 0.0f, 0.0f, 1.0f, 1.0f };
     GLfloat Is5[] = { 0.9f, 0.9f, 0.9f, 1.0f };
     glLightfv(GL_LIGHT5, GL_AMBIENT , Ia5);
     glLightfv(GL_LIGHT5, GL_DIFFUSE , Id5);
     glLightfv(GL_LIGHT5, GL_SPECULAR, Is5);
-      // Parámetros de la Luz 2 (Spotligth=foco)
+  // 6==> Textura mente
     GLfloat Ia6[] = { 0.1f, 0.1f, 0.1f, 1.0f };
     GLfloat Id6[] = { 1.0f, 0.0f, 1.0f, 1.0f };
     GLfloat Is6[] = { 0.9f, 0.9f, 0.9f, 1.0f };
@@ -218,7 +219,7 @@ void initFunc() {
  // Normalizado de coordenadas normales
     glEnable(GL_NORMALIZE);
      
- // Texturas
+ // Cargar Texturas
     glGenTextures(NT,objTexture);
     const char *fileName[NT] = {"common/img/galaxia.bmp","common/img/orange2.bmp","common/img/ironman.bmp","common/img/vision.bmp","common/img/spidy.bmp","common/img/scarlet.bmp"};
     for(unsigned i=0; i<NT; i++) {
@@ -269,7 +270,7 @@ void destroyFunc() {
  
 void funReshape(int wnew, int hnew) {
     
- // ConfiguraciÃ³n del Viewport
+ // Configuracion del Viewport
     glViewport(0, 0, wnew, hnew);
 
  // Captura de w y h
@@ -288,24 +289,21 @@ void funDisplay() {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     
- // Matriz de ProyecciÃ³n P (CÃ¡mara)
+ // Matriz de Proyeccion P (Camara)
   GLfloat fovy = 60, aspectRatio = (GLfloat)w/(GLfloat)h, nplane = 0.1f, fplane = 20.0f;
   gluPerspective(fovy+zoom,aspectRatio,nplane,fplane);
-  // Or whatever you want the step to be
- // You had GL_MODELVIEW
-//glOrtho(-1.5 + zoom, 1.0 - zoom, -2.0 + zoom, 0.5 - zoom, -1.0, 3.5)
-    // GLfloat left = -1.0f, right = 1.0f, bottom = -1.0f, top = 1.0f;
-  // glOrtho(left+zoom,right-zoom,bottom+zoom,top-zoom,nplane,fplane);	
-//glFrustum(left,right,bottom,top,nplane,fplane);
+
  // Para configurar las matrices M y V
     glMatrixMode(GL_MODELVIEW);  
     glLoadIdentity();
      
         light='1';
-      // Matriz de Vista V (CÃ¡mara)
-    GLfloat eye[3]    = {3.0*cos(X_camera*M_PI/180.0)*sin(Y_camera*M_PI/180.0),  3.0*sin(Y_camera*M_PI/180.0),  3.0*cos(Y_camera*M_PI/180.0)*cos(X_camera*M_PI/180.0)};
-    GLfloat center[3] = {0.0,  0.0, 0.0};
-    GLfloat up[3]     = {0.0,  1.0,  0.0};
+      // Matriz de Vista V (Camara)(Circular)
+    GLfloat eye[3]    = {   3.0f*cos(X_camera*M_PI/180.0f)*sin(Y_camera*M_PI/180.0f),
+                            3.0f*sin(Y_camera*M_PI/180.0f), 
+                            3.0f*cos(Y_camera*M_PI/180.0f)*cos(X_camera*M_PI/180.0f)};
+    GLfloat center[3] = {0.0f,  0.0f, 0.0f};
+    GLfloat up[3]     = {0.0f,  1.0f,  0.0f};
     gluLookAt(    eye[0],    eye[1],    eye[2],
                center[0], center[1], center[2],
                    up[0],     up[1],     up[2]);
@@ -313,68 +311,66 @@ void funDisplay() {
           
            
     // Definimos el material del objeto
-   drawLights();
-   universe();
+    drawLights();
+    universe();
     glPushMatrix();
-    glRotatef(rotacionGuante,0,1,0);
-     glTranslatef( 0,-0.5,+2);
-    
-    glRotatef(30,1,0,0);
-    glScalef(0.25,0.25,0.25);
-    gaunlet();
+        glRotatef(rotacionGuante,0,1,0);
+        glTranslatef( 0,-0.5,+2);
+
+        glRotatef(30,1,0,0);
+        glScalef(0.25,0.25,0.25);
+        gaunlet();
     glPopMatrix();
-            //glutSolidSphere(0.05,50,50);
-            glPopMatrix();
+    glPopMatrix();
    
     
     glPushMatrix(); 
-    glTranslatef(-1,0,0);
-    glRotatef(rotY_base,1,1,1);
-    glTranslatef(1,0,0);
-    glScalef(0.25,0.25,0.25);
-    glScalef(scale,scale,scale);
-    drawObject(1,1);
+        glTranslatef(-1,0,0);
+        glRotatef(rotY_base,1,1,1);
+        glTranslatef(1,0,0);
+        glScalef(0.25,0.25,0.25);
+        glScalef(scale,scale,scale);
+        drawObject(1,1);
     glPopMatrix();
    // Intercambiamos los buffers
     glutSwapBuffers();
     
 }
+
+//Funciones teclas
 void funKeyboard(int key, int x, int y) {
-    
+    //Accion Gema 5 Espacio 
     switch(key) {
         case GLUT_KEY_UP:
-           
-             mind=0;
-        turnoff(light);
-        light='5';
-        glEnable(GL_LIGHT5);
-              translateY+=1.0f;
+            mind=0;
+            turnoff(light);
+            light='5';
+            glEnable(GL_LIGHT5);
+            translateY+=1.0f;
             break;
+            
         case GLUT_KEY_DOWN:
-            
-           
-           mind=0;
-        turnoff(light);
-        light='5';
-        glEnable(GL_LIGHT5);
-               translateY-=1.0f;
+            mind=0;
+            turnoff(light);
+            light='5';
+            glEnable(GL_LIGHT5);
+            translateY-=1.0f;
             break;
-        case GLUT_KEY_RIGHT:
             
-           mind=0;
-        turnoff(light);
-        light='5';
-        glEnable(GL_LIGHT5);
+        case GLUT_KEY_RIGHT:
+            mind=0;
+            turnoff(light);
+            light='5';
+            glEnable(GL_LIGHT5);
             translateX+=1.0f;
             break;
-        case GLUT_KEY_LEFT:
             
-             mind=0;
-        turnoff(light);
-        light='5';
-        glEnable(GL_LIGHT5);
-        translateX-=1.0f;
-           
+        case GLUT_KEY_LEFT:
+            mind=0;
+            turnoff(light);
+            light='5';
+            glEnable(GL_LIGHT5);
+            translateX-=1.0f;
             break;
       
     }
@@ -382,14 +378,16 @@ void funKeyboard(int key, int x, int y) {
     glutPostRedisplay();
       
 }
+
+//Zoom ruleta Zoom
 void mouseWheel(int button, int dir, int x, int y)
 {
     if (dir > 0)
     {
         // Zoom in
         zoom-=1;
-           if (zoom>-10.25f){
-        zoom = 10.25f;
+           if (zoom<-10.25f){
+        zoom = -10.25f;
         }
         
     }
@@ -398,29 +396,22 @@ void mouseWheel(int button, int dir, int x, int y)
         // Zoom out
        
         zoom+=1;
-         if ( zoom<10.25f   ){
-        zoom = 10.25f;
+         if ( zoom>10.25f){
+            zoom = 10.25f;
         }
     }
-
    glutPostRedisplay();
 }
-void funIdle() {
-    
-  
-    
-}
+
 void repeat(int t){
     //Sleep(10);
+    //Accion Gema 1 Mente 
     if(mind){
-     
-           
-           
             tele1 += 1;
             tele2 += 1;
-            tele3 += 1;
-          
+            tele3 += 1;        
     }
+    //Balanceo de Spiderman
     if(r){
        balanceo+=1;
        if(balanceo>=90){
@@ -444,18 +435,20 @@ void drawLights() {
  // Luz 0: Direccional
     glLightfv(GL_LIGHT0, GL_POSITION, DL0);
     glPushMatrix();
- // Luz 1: Posicional
+
     glRotatef(rotacionGuante,0,1,0);
+     // Luz de las gemas
+     //Gema mente 
     glLightfv(GL_LIGHT1, GL_POSITION, PL1);
-    
+     //Gema tiempo
     glLightfv(GL_LIGHT2, GL_POSITION, PL1);
-    
+     //Gema
     glLightfv(GL_LIGHT3, GL_POSITION, PL1);
-    
+     //Gema
     glLightfv(GL_LIGHT4, GL_POSITION, PL1);
-    
+     //Gema espacio
     glLightfv(GL_LIGHT5, GL_POSITION, PL1);
-    
+     //Gema
     glLightfv(GL_LIGHT6, GL_POSITION, PL1);
     glPopMatrix();
 
@@ -481,45 +474,59 @@ void MyKeyboardFunc(unsigned char Key, int x, int y){
     
     switch(Key) {
         
-        case 'a':mind=0;
-               turnoff(light);
-        break;
-         case 'A':
-             mind=0;
-               turnoff(light);
-        break;
-        case 'o':
-             turnoff(light);
-        light='3';
-        glEnable(GL_LIGHT3);
-          soul=1;
-        break;
-        case 'O':
-             turnoff(light);
-          soul=0;
-        break;
-        case 'P':
-             turnoff(light);
-        light='6';
-        glEnable(GL_LIGHT6);
-          desZ+=5;
-        if(desZ>=0){
-            desZ=0;
-        }
-        break;
-        case 'p':
-             turnoff(light);
-        light='6';
-        glEnable(GL_LIGHT6);
-           desZ-=5;
-        if(desZ<=-50){
-            desZ=-50;
-        }
-        break;
-        case 'w':
-            rotacionGuante+=1;
+        case 'a':
+            mind=0;
+            turnoff(light);
             break;
-        case 'r': mind=0;
+         case 'A':
+            mind=0;
+            turnoff(light);
+            break;
+            
+        case 'o':
+            turnoff(light);
+            light='3';
+            glEnable(GL_LIGHT3);
+            soul=1;
+            break;
+            
+        case 'O':
+            turnoff(light);
+            soul=0;
+            break;
+        
+        case 'P':
+            turnoff(light);
+            light='6';
+            glEnable(GL_LIGHT6);
+            desZ+=5;
+            if(desZ>=0){
+                desZ=0;
+            }
+            if(translateZ>=-5.0f){
+                translateZ-= 1.0f;
+            }
+            break;
+            
+        case 'p':
+            turnoff(light);
+            light='6';
+            glEnable(GL_LIGHT6);
+            desZ-=5;
+            if(desZ<=-50){
+                desZ=-50;
+            }
+            if(translateZ<=5.0f){
+                translateZ+= 1.0f;
+            }
+        break;
+        
+        case 'w':
+            rotacionGuante+=5;
+            break;
+            
+        case 'r': 
+            mind=0;
             turnoff(light);
             light='4';
             glEnable(GL_LIGHT4);
@@ -530,7 +537,9 @@ void MyKeyboardFunc(unsigned char Key, int x, int y){
                 scale += 0.1f;
             }
             break;
-        case 'R':  mind=0;
+            
+        case 'R':  
+            mind=0;
             turnoff(light);
             light='4';
             glEnable(GL_LIGHT4);
@@ -541,131 +550,65 @@ void MyKeyboardFunc(unsigned char Key, int x, int y){
                 scale -= 0.1f;
             } 
             break;
-         case 'm': mind=1;
-        turnoff(light);
-        light='1';
-        glEnable(GL_LIGHT1);
-        break;
+            
+        case 'm':
+            mind=1;
+            turnoff(light);
+            light='1';
+            glEnable(GL_LIGHT1);
+            break;
+            
         case 'M': mind=0;
-        turnoff(light);
-        break;
-         case 't': 
-             translateX=0;
-             translateY=0;
-             translateZ=0;
-             desZ=0;
-         soul=0;
-         mind=0;
-          turnoff(light);
-        light='2';
-        glEnable(GL_LIGHT2);
-        scale=1;
-         break;
+            turnoff(light);
+            break;
+            
+        case 't': 
+            translateX=0;
+            translateY=0;
+            translateZ=0;
+            desZ=0;
+            soul=0;
+            mind=0;
+            tele1 = 0.0f;
+            tele2 = 0.0f;
+            tele3 = 0.0f;
+            turnoff(light);
+            light='2';
+            glEnable(GL_LIGHT2);
+            scale=1;
+            break;
+            
+        case 'T': 
+            translateX=0;
+            translateY=0;
+            translateZ=0;
+            desZ=0;
+            soul=0;
+            mind=0;
+            tele1 = 0.0f;
+            tele2 = 0.0f;
+            tele3 = 0.0f;
+            turnoff(light);
+            light='2';
+            glEnable(GL_LIGHT2);
+            scale=1;
+            break;
+            
     }
     glutPostRedisplay();
     
 }
-void realityGem(){
-      glPushMatrix();
-     glTranslatef(-0.8,0,-0.5);
-     glRotatef(30,0,1,0);
-    GLUquadricObj *obj = gluNewQuadric();
-    glutSolidSphere(0.3,50,50);
-     glTranslatef(0,0,-0.63);
-    gluCylinder(obj, 0.2, 0.27, 0.5, 100, 100);
-    glRotatef(desZ,1,0,0);
-    glutSolidSphere(0.2,50,50);
-       glTranslatef(0,0,-0.50);
-    gluCylinder(obj, 0.1, 0.17, 0.4, 100, 100);
-    glutSolidSphere(0.1,50,50);
-       glTranslatef(0,0,-0.20);
-    gluCylinder(obj, 0.01, 0.1, 0.2, 100, 100);
-    glPopMatrix();
-}
-void powerGem(){
-      glPushMatrix();
-     glTranslatef(-0.3,0,-0.8);
-     glRotatef(10,0,1,0);
-    GLUquadricObj *obj = gluNewQuadric();
-    glutSolidSphere(0.3,50,50);
-     glTranslatef(0,0,-0.63);
-    gluCylinder(obj, 0.2, 0.27, 0.5, 100, 100);
-    glRotatef(desZ,1,0,0);
-   
-    glutSolidSphere(0.2,50,50);
-       glTranslatef(0,0,-0.50);
-    gluCylinder(obj, 0.1, 0.17, 0.4, 100, 100);
-    glutSolidSphere(0.1,50,50);
-       glTranslatef(0,0,-0.20);
-    gluCylinder(obj, 0.01, 0.1, 0.2, 100, 100);
-     glPopMatrix();
-}
-void spaceGem(){
-      glPushMatrix();
-     glTranslatef(0.3,0,-1);
-    GLUquadricObj *obj = gluNewQuadric();
-    glutSolidSphere(0.3,50,50);
-     glTranslatef(0,0,-0.63);
-    
-   gluCylinder(obj, 0.2, 0.27, 0.5, 100, 100);
-   
-      glRotatef(desZ,1,0,0);
-    glutSolidSphere(0.2,50,50);
-       glTranslatef(0,0,-0.50);
-    gluCylinder(obj, 0.1, 0.17, 0.4, 100, 100);
-    glutSolidSphere(0.1,50,50);
-       glTranslatef(0,0,-0.20);
-    gluCylinder(obj, 0.01, 0.1, 0.2, 100, 100);
-     glPopMatrix();
-}
-void soulGem(){
-  glPushMatrix();
-     glTranslatef(0.8,0,-0.6);
-     glRotatef(-30,0,1,0);
-   
-    GLUquadricObj *obj = gluNewQuadric();
-    glutSolidSphere(0.3,50,50);
-     glTranslatef(0,0,-0.63);
-    gluCylinder(obj, 0.2, 0.27, 0.5, 100, 100);
-     glRotatef(desZ,1,0,0);
-   
-    glutSolidSphere(0.2,50,50);
-       glTranslatef(0,0,-0.50);
-    gluCylinder(obj, 0.1, 0.17, 0.4, 100, 100);
-    glutSolidSphere(0.1,50,50);
-       glTranslatef(0,0,-0.20);
-    gluCylinder(obj, 0.01, 0.1, 0.2, 100, 100);
-     glPopMatrix();
-}
-void timeGem(){
-      glPushMatrix();
-     glTranslatef(0.6,0.3,0);
-     
-    glRotatef(-75,0,1,0);
-
-    GLUquadricObj *obj = gluNewQuadric();
-    glutSolidSphere(0.3,50,50);
-     glTranslatef(0,0,-0.63);
-    
-    gluCylinder(obj, 0.2, 0.27, 0.5, 100, 100);
-      glRotatef(30,0,1,0);
-    glutSolidSphere(0.2,50,50);
-       glTranslatef(0,0,-0.50);
-    gluCylinder(obj, 0.01, 0.17, 0.4, 100, 100);
-      glPopMatrix();
-   
-}
+//Gema
 void gem(){
-      GLfloat Ka[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+    GLfloat Ka[] = { 0.2f, 0.2f, 0.2f, 1.0f };
     GLfloat Kd[] = { 1,1, 1.0f, 1.0f };
     GLfloat Ks[] = { 1,1,1, 1.0f };
     glMaterialfv(GL_FRONT, GL_AMBIENT  , Ka);
     glMaterialfv(GL_FRONT, GL_DIFFUSE  , Kd);
     glMaterialfv(GL_FRONT, GL_SPECULAR , Ks);
     glMaterialf (GL_FRONT, GL_SHININESS, 100.0f);
-              glutSolidSphere(0.5,50,50);
-              
-               GLfloat Kc[] = {  0.24725f, 0.2245f, 0.0645f, 1.0f };
+    glutSolidSphere(0.5,50,50);
+    GLfloat Kc[] = {  0.24725f, 0.2245f, 0.0645f, 1.0f };
     GLfloat Kf[] = { 0.34615f, 0.3143f, 0.0903f, 1.0f };
     GLfloat Kv[] = {0.797357f, 0.723991f, 0.208006f, 1.0f};
     glMaterialfv(GL_FRONT, GL_AMBIENT  , Kc);
@@ -673,53 +616,135 @@ void gem(){
     glMaterialfv(GL_FRONT, GL_SPECULAR , Kv);
     glMaterialf (GL_FRONT, GL_SHININESS, 83.2f);
 }
-void mindGem(){ 
-     glutSolidSphere(1,50,50); 
-     glPushMatrix();
-     glTranslatef(0,0.9,0);
-     
- // Luz 2: Foco
-     glScalef(0.5,0.35,0.5);
-     gem();
-     glPopMatrix();
-     
-     glRotatef(30,1,0,0);
-     glRotatef(desZ,1,0,0);
-     timeGem();
-     
-    
-     soulGem();
-     
-    
-     spaceGem();
-     
- 
-     realityGem();
-     
+
+//Gema 6 Morado Poder
+void powerGem(){
+    glPushMatrix();
+        glTranslatef(-0.3,0,-0.8);
+        glRotatef(10,0,1,0);
+            GLUquadricObj *obj = gluNewQuadric();
+        glutSolidSphere(0.3,50,50);
+        glTranslatef(0,0,-0.63);
+        gluCylinder(obj, 0.2, 0.27, 0.5, 100, 100);
+        glRotatef(desZ,1,0,0);
+        glutSolidSphere(0.2,50,50);
+        glTranslatef(0,0,-0.50);
+        gluCylinder(obj, 0.1, 0.17, 0.4, 100, 100);
+        glutSolidSphere(0.1,50,50);
+        glTranslatef(0,0,-0.20);
+        gluCylinder(obj, 0.01, 0.1, 0.2, 100, 100);
+    glPopMatrix();
+}
+//Gema 5 Azul Espacio
+void spaceGem(){
+    glPushMatrix();
+        glTranslatef(0.3,0,-1);
+            GLUquadricObj *obj = gluNewQuadric();
+        glutSolidSphere(0.3,50,50);
+        glTranslatef(0,0,-0.63);
+        gluCylinder(obj, 0.2, 0.27, 0.5, 100, 100);
+        glRotatef(desZ,1,0,0);
+        glutSolidSphere(0.2,50,50);
+        glTranslatef(0,0,-0.50);
+        gluCylinder(obj, 0.1, 0.17, 0.4, 100, 100);
+        glutSolidSphere(0.1,50,50);
+        glTranslatef(0,0,-0.20);
+        gluCylinder(obj, 0.01, 0.1, 0.2, 100, 100);
+    glPopMatrix();
+}
+//Gema 4 Rojo Realidad
+void realityGem(){
+    glPushMatrix();
+        glTranslatef(-0.8,0,-0.5);
+        glRotatef(30,0,1,0);
+            GLUquadricObj *obj = gluNewQuadric();
+        glutSolidSphere(0.3,50,50);
+        glTranslatef(0,0,-0.63);
+        gluCylinder(obj, 0.2, 0.27, 0.5, 100, 100);
+        glRotatef(desZ,1,0,0);
+        glutSolidSphere(0.2,50,50);
+        glTranslatef(0,0,-0.50);
+        gluCylinder(obj, 0.1, 0.17, 0.4, 100, 100);
+        glutSolidSphere(0.1,50,50);
+        glTranslatef(0,0,-0.20);
+        gluCylinder(obj, 0.01, 0.1, 0.2, 100, 100);
+    glPopMatrix();
+}
+//Gema 3 Naranja Alma
+void soulGem(){
+glPushMatrix();
+    glTranslatef(0.8,0,-0.6);
+        glRotatef(-30,0,1,0);
+            GLUquadricObj *obj = gluNewQuadric();
+        glutSolidSphere(0.3,50,50);
+        glTranslatef(0,0,-0.63);
+        gluCylinder(obj, 0.2, 0.27, 0.5, 100, 100);
+        glRotatef(desZ,1,0,0);
+        glutSolidSphere(0.2,50,50);
+        glTranslatef(0,0,-0.50);
+        gluCylinder(obj, 0.1, 0.17, 0.4, 100, 100);
+        glutSolidSphere(0.1,50,50);
+        glTranslatef(0,0,-0.20);
+        gluCylinder(obj, 0.01, 0.1, 0.2, 100, 100);
+    glPopMatrix();
+}
+//Gema 2 Verde Tiempo
+void timeGem(){
+    glPushMatrix();
+        glTranslatef(0.6,0.3,0);
+        glRotatef(-75,0,1,0);
+            GLUquadricObj *obj = gluNewQuadric();
+        glutSolidSphere(0.3,50,50);
+        glTranslatef(0,0,-0.63);
+        gluCylinder(obj, 0.2, 0.27, 0.5, 100, 100);
+        glRotatef(30,0,1,0);
+        glutSolidSphere(0.2,50,50);
+        glTranslatef(0,0,-0.50);
+        gluCylinder(obj, 0.01, 0.17, 0.4, 100, 100);
+    glPopMatrix();
    
-     powerGem();
-     
-     
- 
 }
-void gaunlet(){
+//Gema 1 Amarillo Mente
+void mindGem(){ 
+    glutSolidSphere(1,50,50); 
+    glPushMatrix();
+    glTranslatef(0,0.9,0);
+    glScalef(0.5,0.35,0.5);
     
-               GLfloat Kc[] = {  0.24725f, 0.2245f, 0.0645f, 1.0f };
+    gem();
+    
+    glPopMatrix();
+    glRotatef(30,1,0,0);
+    glRotatef(desZ,1,0,0);
+    
+    timeGem();
+
+    soulGem();
+
+    spaceGem();
+
+    realityGem();
+
+    powerGem();
+
+}
+//Guante
+void gaunlet(){
+    GLfloat Kc[] = {  0.24725f, 0.2245f, 0.0645f, 1.0f };
     GLfloat Kf[] = { 0.34615f, 0.3143f, 0.0903f, 1.0f };
     GLfloat Kv[] = {0.797357f, 0.723991f, 0.208006f, 1.0f};
     glMaterialfv(GL_FRONT, GL_AMBIENT  , Kc);
     glMaterialfv(GL_FRONT, GL_DIFFUSE  , Kf);
     glMaterialfv(GL_FRONT, GL_SPECULAR , Kv);
     glMaterialf (GL_FRONT, GL_SHININESS, 83.2f);
-    GLUquadricObj *obj = gluNewQuadric();
+        GLUquadricObj *obj = gluNewQuadric();
     gluCylinder(obj, 0.8, 1, 2, 100, 100);
     glPushMatrix();
-     glScalef(1,0.8,1);
-     
-    mindGem();
+        glScalef(1,0.8,1);
+        mindGem();
     glPopMatrix();
-//    //gluCylinder(obj, 1.0, 1, 3, 30, 30);
 }
+//Esfera con textura de ironman
 void iron(){
     // Definimos el material del objeto
     GLfloat Ka[] = { 0.2f, 0.2f, 0.2f, 1.0f };
@@ -729,16 +754,13 @@ void iron(){
     glMaterialfv(GL_FRONT, GL_DIFFUSE  , Kd);
     glMaterialfv(GL_FRONT, GL_SPECULAR , Ks);
     glMaterialf (GL_FRONT, GL_SHININESS, 50.0f);
-     glEnable(GL_TEXTURE_2D);
+        glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, objTexture[2]);
    
     glPushMatrix();
-      glTranslatef(-5.0f, 0.0f, -5.0f);
-   
-            glRotatef(90,0,1,0);
-
-      
-    myVbo();
+        glTranslatef(-5.0f, 0.0f, -5.0f);
+        glRotatef(90,0,1,0);
+        myVbo();
     glPopMatrix();
 }
 //Esfera con textura de vision
@@ -751,13 +773,12 @@ void vision(){
     glMaterialfv(GL_FRONT, GL_DIFFUSE  , Kg);
     glMaterialfv(GL_FRONT, GL_SPECULAR , Kh);
     glMaterialf (GL_FRONT, GL_SHININESS, 50.0f);
-     glEnable(GL_TEXTURE_2D);
+        glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, objTexture[3]);
-   glDepthMask(GL_FALSE);
+    glDepthMask(GL_FALSE);
     glPushMatrix();
         glRotatef(90,0,1,0);
-      
-    myVbo();
+        myVbo();
     glPopMatrix();
     glDepthMask(GL_TRUE);
     glDisable(GL_TEXTURE_2D);
@@ -772,15 +793,15 @@ void spidy(){
     glMaterialfv(GL_FRONT, GL_DIFFUSE  , Kd);
     glMaterialfv(GL_FRONT, GL_SPECULAR , Ks);
     glMaterialf (GL_FRONT, GL_SHININESS, 50.0f);
-    glEnable(GL_TEXTURE_2D);
+        glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, objTexture[4]);
     glPushMatrix();
-    glTranslatef(0,4,-2.5);
-    glRotatef(balanceo,0,0,1);
-    glRotatef(90,0,1,0);
-    glTranslatef(0,-4,0);
-    glScalef(0.25,0.25,0.25);
-    myVbo();
+        glTranslatef(0,4,-2.5);
+        glRotatef(balanceo,0,0,1);
+        glRotatef(90,0,1,0);
+        glTranslatef(0,-4,0);
+        glScalef(0.25,0.25,0.25);
+        myVbo();
     glPopMatrix();
     
     glDisable(GL_TEXTURE_2D);
@@ -795,20 +816,18 @@ void witch(){
     glMaterialfv(GL_FRONT, GL_DIFFUSE  , Kd);
     glMaterialfv(GL_FRONT, GL_SPECULAR , Ks);
     glMaterialf (GL_FRONT, GL_SHININESS, 50.0f);
-      glEnable(GL_TEXTURE_2D);
+        glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, objTexture[5]);
     glPushMatrix();
         glTranslatef(4.0f, 0.0f, -5.0f);
         glRotatef(90,0,1,0);
         myVbo();
     glPopMatrix();
-    
     glDisable(GL_TEXTURE_2D);
 }
 //Esferas de los cuatro personajes
 void drawObject(GLfloat s, GLint c) {
-    
- 
+
    // Definimos el objeto
     glPushMatrix();
         glTranslatef(1.0f, 0.0f, 0.0f);
@@ -828,7 +847,6 @@ void drawObject(GLfloat s, GLint c) {
         glRotatef(tele3,0,1,0);
         glTranslatef(0.0f, -1.0f, 0.0f);
         glTranslatef(translateX,translateY,translateZ);
-       
         witch();
     glPopMatrix();
     
@@ -841,10 +859,10 @@ void drawObject(GLfloat s, GLint c) {
         glRotatef(tele3,1,0,0);
         glTranslatef(0.0f, 0.0f, -1.0f);
         glTranslatef(translateX,translateY,translateZ);
-       
         vision();
     glPopMatrix();
 }
+//Mueve la posicion con respecto puntero al clickar raton
 void mouseButton(int button, int state, int x, int y) {
 	// only start motion if the left button is pressed
     if (button == GLUT_LEFT_BUTTON) {
@@ -859,7 +877,7 @@ void mouseButton(int button, int state, int x, int y) {
         }
     }
 }
-
+//Detecta movimiento raton
 void mouseMove(int x, int y) {
 
 	// this will only be true when the left button is down	  
@@ -871,6 +889,31 @@ void mouseMove(int x, int y) {
     }
    glutPostRedisplay();
 }
+
+//VBO's de los objetos 
+void myVbo() {
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, VBO[0]); glVertexPointer  (3, GL_FLOAT, 0, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO[1]); glNormalPointer  (   GL_FLOAT, 0, 0);  
+    glBindBuffer(GL_ARRAY_BUFFER, VBO[2]); glTexCoordPointer(2, GL_FLOAT, 0, 0); 
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBO[3]);
+    glDrawElements (GL_TRIANGLES, meshSize, GL_UNSIGNED_SHORT, 0);
+        
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    
+}
+
 void myMesh(GLfloat r, GLint Ni, GLint Nj) {
     
     Tmesh mesh = createMesh(r,Ni,Nj);
@@ -885,29 +928,7 @@ void myMesh(GLfloat r, GLint Ni, GLint Nj) {
     glEnd();
     
 }
-void myVbo() {
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_NORMAL_ARRAY);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    
-    glBindBuffer(GL_ARRAY_BUFFER, VBO[0]); glVertexPointer  (3, GL_FLOAT, 0, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO[1]); glNormalPointer  (   GL_FLOAT, 0, 0);  
-    glBindBuffer(GL_ARRAY_BUFFER, VBO[2]); glTexCoordPointer(2, GL_FLOAT, 0, 0);
-        
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBO[3]);
-    glDrawElements (GL_TRIANGLES, meshSize, GL_UNSIGNED_SHORT, 0);
-        
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-        
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_NORMAL_ARRAY);
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    
-}
 Tmesh createMesh(GLfloat r, GLint Ni, GLint Nj) {
     
     Tmesh mesh;
