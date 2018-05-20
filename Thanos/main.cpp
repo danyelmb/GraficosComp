@@ -46,18 +46,16 @@ int h = 600;
 unsigned char light='0';
 bool mind=0;
 GLfloat desZ = 0.0f;
-GLfloat rotY_green =  0.0f;
-GLfloat rotX_green =  0.0f;
-GLfloat rotZ_green =  0.0f;
-GLfloat luz_r=  0.0f;    
-GLfloat luz_v =  0.0f;
-GLfloat luz_b =  0.0f;
-
-GLfloat Lp =  0.0f;
+GLfloat rotacionGuante=0.0f;
+GLfloat balanceo =  0.0f;
 GLfloat rotY_base =  0.0f;
 GLfloat rotX_base =  0.0f;
 GLfloat rotZ_base =  0.0f;
 GLfloat fovy= 60.0f;
+
+GLfloat tele1 = 0.0f;
+GLfloat tele2 = 0.0f;
+GLfloat tele3 = 0.0f;
 GLfloat Y_camera =  0.0f;
 GLfloat X_camera =  0.0f;
 GLfloat Z_camera =  0.0f;
@@ -318,7 +316,9 @@ void funDisplay() {
    drawLights();
    universe();
     glPushMatrix();
+    glRotatef(rotacionGuante,0,1,0);
      glTranslatef( 0,-0.5,+2);
+    
     glRotatef(30,1,0,0);
     glScalef(0.25,0.25,0.25);
     gaunlet();
@@ -332,6 +332,7 @@ void funDisplay() {
     glRotatef(rotY_base,1,1,1);
     glTranslatef(1,0,0);
     glScalef(0.25,0.25,0.25);
+    glScalef(scale,scale,scale);
     drawObject(1,1);
     glPopMatrix();
    // Intercambiamos los buffers
@@ -412,19 +413,25 @@ void funIdle() {
 void repeat(int t){
     //Sleep(10);
     if(mind){
-        rotY_base+=5;
+     
+           
+           
+            tele1 += 1;
+            tele2 += 1;
+            tele3 += 1;
+          
     }
     if(r){
-       Lp+=1;
-       if(Lp>=90){
+       balanceo+=1;
+       if(balanceo>=90){
            r=false;
-           Lp=90;
+           balanceo=90;
        }
     }else{
-         Lp-=1;
-       if(Lp<=-90){
+         balanceo-=1;
+       if(balanceo<=-90){
            r=true;
-           Lp=-90;
+           balanceo=-90;
        }
     }
     glutPostRedisplay();
@@ -438,6 +445,7 @@ void drawLights() {
     glLightfv(GL_LIGHT0, GL_POSITION, DL0);
     glPushMatrix();
  // Luz 1: Posicional
+    glRotatef(rotacionGuante,0,1,0);
     glLightfv(GL_LIGHT1, GL_POSITION, PL1);
     
     glLightfv(GL_LIGHT2, GL_POSITION, PL1);
@@ -508,20 +516,31 @@ void MyKeyboardFunc(unsigned char Key, int x, int y){
             desZ=-50;
         }
         break;
-        case 'r': 
-            mind=0;
-        turnoff(light);
-        light='4';
-        glEnable(GL_LIGHT4);
-        scale+=0.1;
-             break;
-        case 'R': mind=0;
-        turnoff(light);
-        light='4';
-        glEnable(GL_LIGHT4);
-             scale-=0.1; break;
-    
-        
+        case 'w':
+            rotacionGuante+=1;
+            break;
+        case 'r': mind=0;
+            turnoff(light);
+            light='4';
+            glEnable(GL_LIGHT4);
+            if(scale<3.0f){
+                scale +=  0.1f;
+            }
+            if(scale<1.0f){
+                scale += 0.1f;
+            }
+            break;
+        case 'R':  mind=0;
+            turnoff(light);
+            light='4';
+            glEnable(GL_LIGHT4);
+            if(scale>0.1f){
+                scale -= 0.1f;
+            }
+            if(scale>1.0f){
+                scale -= 0.1f;
+            } 
+            break;
          case 'm': mind=1;
         turnoff(light);
         light='1';
@@ -757,7 +776,7 @@ void spidy(){
     glBindTexture(GL_TEXTURE_2D, objTexture[4]);
     glPushMatrix();
     glTranslatef(0,4,-2.5);
-    glRotatef(Lp,0,0,1);
+    glRotatef(balanceo,0,0,1);
     glRotatef(90,0,1,0);
     glTranslatef(0,-4,0);
     glScalef(0.25,0.25,0.25);
@@ -790,15 +809,41 @@ void witch(){
 void drawObject(GLfloat s, GLint c) {
     
  
+   // Definimos el objeto
+    glPushMatrix();
+        glTranslatef(1.0f, 0.0f, 0.0f);
+        glRotatef(tele1,1,0,0);
+        glRotatef(tele2,0,1,0);
+        glRotatef(tele3,0,0,1);
+        glTranslatef(-1.0f, 0.0f, 0.0f);
+        glTranslatef(translateX,translateY,translateZ);
+        iron();
+    glPopMatrix();
     
- // Definimos el objeto
-  
     
-   iron();
-    witch();
+    glPushMatrix();
+        glTranslatef(0.0f, 1.0f, 0.0f);
+        glRotatef(tele1,1,1,0);
+        glRotatef(tele2,0,1,1);
+        glRotatef(tele3,0,1,0);
+        glTranslatef(0.0f, -1.0f, 0.0f);
+        glTranslatef(translateX,translateY,translateZ);
+       
+        witch();
+    glPopMatrix();
+    
     spidy();
-    vision();
-
+    
+    glPushMatrix();
+        glTranslatef(0.0f, 0.0f, 1.0f);
+        glRotatef(tele1,0,0,1);
+        glRotatef(tele2,1,1,1);
+        glRotatef(tele3,1,0,0);
+        glTranslatef(0.0f, 0.0f, -1.0f);
+        glTranslatef(translateX,translateY,translateZ);
+       
+        vision();
+    glPopMatrix();
 }
 void mouseButton(int button, int state, int x, int y) {
 	// only start motion if the left button is pressed
