@@ -339,7 +339,7 @@ void funDisplay() {
 
 //Funciones teclas
 void funKeyboard(int key, int x, int y) {
-    //Accion Gema 5 Espacio 
+    //Poder Gema Espacio Azul Mover a los Personajes
     switch(key) {
         case GLUT_KEY_UP:
             mind=0;
@@ -473,7 +473,7 @@ void turnoff(unsigned char Key){
 void MyKeyboardFunc(unsigned char Key, int x, int y){
     
     switch(Key) {
-        
+        //Apagar Guante
         case 'a':
             mind=0;
             turnoff(light);
@@ -482,19 +482,18 @@ void MyKeyboardFunc(unsigned char Key, int x, int y){
             mind=0;
             turnoff(light);
             break;
-            
+        //Poder Gema Alma Naranja Cambiar Textura
         case 'o':
             turnoff(light);
             light='3';
             glEnable(GL_LIGHT3);
             soul=1;
             break;
-            
         case 'O':
             turnoff(light);
             soul=0;
             break;
-        
+        //Poder Gema Poder Lila Ataer Personajes y Mover Dedos
         case 'P':
             turnoff(light);
             light='6';
@@ -507,7 +506,6 @@ void MyKeyboardFunc(unsigned char Key, int x, int y){
                 translateZ-= 1.0f;
             }
             break;
-            
         case 'p':
             turnoff(light);
             light='6';
@@ -520,11 +518,11 @@ void MyKeyboardFunc(unsigned char Key, int x, int y){
                 translateZ+= 1.0f;
             }
         break;
-        
+        //Mover Guante
         case 'w':
             rotacionGuante+=5;
             break;
-            
+        //Poder Gema Realidad Rojo Cambiar Tamaño Personajes
         case 'r': 
             mind=0;
             turnoff(light);
@@ -537,7 +535,6 @@ void MyKeyboardFunc(unsigned char Key, int x, int y){
                 scale += 0.1f;
             }
             break;
-            
         case 'R':  
             mind=0;
             turnoff(light);
@@ -550,18 +547,17 @@ void MyKeyboardFunc(unsigned char Key, int x, int y){
                 scale -= 0.1f;
             } 
             break;
-            
+        //Poder Gema Mente Amarillo Rotar Personajes
         case 'm':
             mind=1;
             turnoff(light);
             light='1';
             glEnable(GL_LIGHT1);
             break;
-            
         case 'M': mind=0;
             turnoff(light);
             break;
-            
+        //Poder Gema Tiempo Verde Reestablecer
         case 't': 
             translateX=0;
             translateY=0;
@@ -577,7 +573,6 @@ void MyKeyboardFunc(unsigned char Key, int x, int y){
             glEnable(GL_LIGHT2);
             scale=1;
             break;
-            
         case 'T': 
             translateX=0;
             translateY=0;
@@ -765,7 +760,7 @@ void iron(){
 }
 //Esfera con textura de vision
 void vision(){
-// Definimos el material del objeto
+    // Definimos el material del objeto
     GLfloat Kf[] = { 0.2f, 0.2f, 0.2f, 0.5f };
     GLfloat Kg[] = { 0.9f, 0.9f, 0.9f, 0.5f };
     GLfloat Kh[] = { 0.9f, 0.9f, 0.9f, 0.5f };
